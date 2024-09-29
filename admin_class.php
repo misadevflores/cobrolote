@@ -322,10 +322,8 @@ Class Action {
 			return 1;
 		}
 	}
-	function save_payment(){
 
-		
-		
+	function save_payment(){
 		extract($_POST);
 
 		// if(!empty($id)){
@@ -357,10 +355,9 @@ Class Action {
 		
 		
 		
-		
 		if(empty($id)){
 			$fees =  $this->db->query("SELECT number_of_payments, paid_fees from student_ef_list where id= $ef_id");
-		
+		   
 			$row = $fees->fetch_array();
 			$total_fees = $row['number_of_payments'];
 			$paid_fees = $row['paid_fees'];

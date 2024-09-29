@@ -13,71 +13,80 @@ if (isset($_GET['id'])) {
 ?>
 <div class="container-fluid">
 	<form id="manage-payment">
-		<div id="msg"></div>
-		<input type="hidden" name="id" value="<?php echo isset($id) ? $id : '' ?>">
-		<div class="form-group">
-			<label for="" class="control-label">Cliente</label>
-			<select name="ef_id" id="ef_id" class="custom-select input-sm select2">
-				<option value=""></option>
-				<?php
-				$fees = $conn->query("SELECT ef.*,s.name as sname,s.id_no FROM student_ef_list ef inner join student s on s.id = ef.student_id order by s.name asc ");
-				while ($row = $fees->fetch_assoc()) :
+		<div class="row">
+			<div id="msg"></div>
+			<input type="hidden" name="id" value="<?php echo isset($id) ? $id : '' ?>">
+			<div class="form-group col-12">
+				<label for="" class="control-label">Cliente</label>
+				<select name="ef_id" id="ef_id" class="custom-select input-sm select2">
+					<option value=""></option>
+					<?php
+					$fees = $conn->query("SELECT ef.*,s.name as sname,s.id_no FROM student_ef_list ef inner join student s on s.id = ef.student_id order by s.name asc ");
+					while ($row = $fees->fetch_assoc()) :
 
-					$paid = $conn->query("SELECT sum(amount)
-					as paid FROM payments
-					where ef_id=" . $row['id']);
+						$paid = $conn->query("SELECT sum(amount)
+						as paid FROM payments
+						where ef_id=" . $row['id']);
 
-					$lastPaymentDate = $conn->query("SELECT payment_date 
-					FROM payments 
-					WHERE ef_id = " . $row['id'] . (isset($id) ? " and id!=$id " : '') . "
-					ORDER BY date_created DESC 
-					LIMIT 1");
-					
-					$paid = $paid->num_rows > 0 ? $paid->fetch_array()['paid'] : '';
-					$lastPaymentDate = $lastPaymentDate->num_rows > 0 ? $lastPaymentDate->fetch_array()['payment_date'] : '';
-					$balance = $row['total_fee'] - $paid;
-					$registerDate= $row['register_date'];
-				?>
-					<option value="<?php echo $row['id'] ?>" monthly-fee="<?php echo $row['monthly_fee']?>" register-date ="<?php echo $registerDate ?>" last-payment-date="<?php echo $lastPaymentDate ?>" data-balance="<?php echo $balance ?>" <?php echo isset($ef_id) && $ef_id == $row['id'] ? 'selected' : '' ?>><?php echo  ucwords($row['sname']) .' | '. $row['ef_no']   ?></option>
-				<?php endwhile; ?>
-			</select>
+						$lastPaymentDate = $conn->query("SELECT payment_date 
+						FROM payments 
+						WHERE ef_id = " . $row['id'] . (isset($id) ? " and id!=$id " : '') . "
+						ORDER BY date_created DESC 
+						LIMIT 1");
+						
+						$paid = $paid->num_rows > 0 ? $paid->fetch_array()['paid'] : '';
+						$lastPaymentDate = $lastPaymentDate->num_rows > 0 ? $lastPaymentDate->fetch_array()['payment_date'] : '';
+						$balance = $row['total_fee'] - $paid;
+						$registerDate= $row['register_date'];
+					?>
+						<option value="<?php echo $row['id'] ?>" monthly-fee="<?php echo $row['monthly_fee']?>" register-date ="<?php echo $registerDate ?>" last-payment-date="<?php echo $lastPaymentDate ?>" data-balance="<?php echo $balance ?>" <?php echo isset($ef_id) && $ef_id == $row['id'] ? 'selected' : '' ?>><?php echo  ucwords($row['sname']) .' | '. $row['ef_no']   ?></option>
+					<?php endwhile; ?>
+				</select>
+			</div>
+			<div class="form-group col-6">
+			<label for="" class="control-label">Fecha de pago</label>
+			<input type="date" name="payment_date" id="payment_date" class="form-control" value="<?php echo isset($payment_date) ? $payment_date : ''?>" required>
+			<small id="last-payment-info" style="color: lightgray;"></small> <!-- Aquí se mostrará la última fecha de pago -->
+			</div>
+			<div class="form-group col-6">
+				<label for="" class="control-label">Saldo Pendiente</label>
+				<input type="text" class="form-control text-right" id="balance" value="" required readonly>
+			</div>
+			<div class="form-group col-6">
+			<label for="" class="control-label">Monto a pagar</label>
+			<input type="number" class="form-control text-right" id="amount" name="amount" min="0"
+				oninput="if(this.value === '' || this.value < 0) this.value = 0; this.value = Math.abs(this.value)"
+				value="<?php echo isset($amount) ? $amount : 0 ?>" required>
+			</div>
+			<div class="form-group col-6">
+			<label for="" class="control-label">Multa por retraso</label>
+			<input type="number" id="payment_fine" class="form-control text-right" name="fine" min="0"
+				oninput="if(this.value === '' || this.value < 0) this.value = 0; this.value = Math.abs(this.value)" 
+				value="<?php echo isset($fine) ? $fine : 0 ?>" required>
+			</div>
+			<div class="form-group col-6">
+			<label for="" class="control-label">Tipo de cambio</label>
+			<input type="number" id="exchange_rate" class="form-control text-right" name="registered_exchange_rate" min="0" step="0.01"
+				oninput="if(this.value === '' || this.value < 0) this.value = 0; this.value = parseFloat(this.value).toFixed(2)" 
+				value="<?php echo isset($registered_exchange_rate) ? $registered_exchange_rate : $exchange_rate ?>" required>
+			</div>
+			<div class="form-group col-6">
+				<label for="" class="control-label">Total Bolivianos</label>
+				<input type="number" class="form-control text-right" id="total_bs" value="0" required readonly>
+			</div>
+			<div class="form-group col-12">
+				<label for="" class="control-label">Estado</label>
+				<select name="estado" id="estado" class='form-control'>
+					<option value="0">Pagado</option>
+					<option value="1">Pendiente</option>
+				</select>
+			</div>
+			<div class="form-group col-12">
+				<label for="" class="control-label">Observaciones</label>
+				<textarea name="remarks" id="" cols="30" rows="3" class="form-control" required=""><?php echo isset($remarks) ? $remarks : '' ?></textarea>
+			</div>
 		</div>
-		<div class="form-group">
-		<label for="" class="control-label">Fecha de pago</label>
-		<input type="date" name="payment_date" id="payment_date" class="form-control" value="<?php echo isset($payment_date) ? $payment_date : ''?>" required>
-		<small id="last-payment-info" style="color: lightgray;"></small> <!-- Aquí se mostrará la última fecha de pago -->
-		</div>
-		<div class="form-group">
-			<label for="" class="control-label">Saldo Pendiente</label>
-			<input type="text" class="form-control text-right" id="balance" value="" required readonly>
-		</div>
-		<div class="form-group">
-		<label for="" class="control-label">Monto a pagar</label>
-		<input type="number" class="form-control text-right" id="amount" name="amount" min="0"
-			oninput="if(this.value === '' || this.value < 0) this.value = 0; this.value = Math.abs(this.value)"
-			value="<?php echo isset($amount) ? $amount : 0 ?>" required>
-		</div>
-		<div class="form-group">
-		<label for="" class="control-label">Multa por retraso</label>
-		<input type="number" id="payment_fine" class="form-control text-right" name="fine" min="0"
-			oninput="if(this.value === '' || this.value < 0) this.value = 0; this.value = Math.abs(this.value)" 
-			value="<?php echo isset($fine) ? $fine : 0 ?>" required>
-		</div>
-		<div class="form-group">
-		<label for="" class="control-label">Tipo de cambio</label>
-		<input type="number" id="exchange_rate" class="form-control text-right" name="registered_exchange_rate" min="0" step="0.01"
-			oninput="if(this.value === '' || this.value < 0) this.value = 0; this.value = parseFloat(this.value).toFixed(2)" 
-			value="<?php echo isset($registered_exchange_rate) ? $registered_exchange_rate : $exchange_rate ?>" required>
-		</div>
-		<div class="form-group">
-			<label for="" class="control-label">Total Bolivianos</label>
-			<input type="number" class="form-control text-right" id="total_bs" value="0" required readonly>
-		</div>
-		<div class="form-group">
-			<label for="" class="control-label">Observaciones</label>
-			<textarea name="remarks" id="" cols="30" rows="3" class="form-control" required=""><?php echo isset($remarks) ? $remarks : '' ?></textarea>
-		</div>
-	</form>
+ 	</form>
 </div>
 
 <script>
@@ -86,7 +95,6 @@ if (isset($_GET['id'])) {
     if(isEdit && $('#ef_id').val() != ""){
 		$('#ef_id').change(mangeUpdateCustomerSelectChange).change()
 	}
-
 
 	var registerDate;
 	var lastPaymentDate;
@@ -208,7 +216,8 @@ if (isset($_GET['id'])) {
 				end_load()
 			},
 			success: function(resp) {
-				resp = JSON.parse(resp)
+				resp = JSON.parse(resp);
+				// console.log(resp);
 				if (resp.status == 1) {
 					alert_toast("Datos guardados con éxito.", 'success')
 					setTimeout(function() {

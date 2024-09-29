@@ -1,5 +1,7 @@
 <?php
 include 'db_connect.php';
+date_default_timezone_set("America/La_Paz");
+setlocale(LC_TIME, 'es_VE.UTF-8','esp');
 $month = isset($_GET['month']) ? $_GET['month'] : date('Y-m');
 ?>
 <div class="container-fluid">
@@ -33,7 +35,7 @@ $month = isset($_GET['month']) ? $_GET['month'] : date('Y-m');
                             <?php
                             $i = 1;
                             $total = 0;
-                            $payments = $conn->query("SELECT p.*,s.name as sname, ef.ef_no ,s.id_no, ef.course_id FROM payments p inner join student_ef_list ef on ef.id = p.ef_id inner join student s on s.id = ef.student_id where date_format(p.date_created,'%Y-%m') = '$month' order by unix_timestamp(p.date_created) asc ");
+                            $payments = $conn->query("SELECT p.*,s.name as sname, ef.ef_no ,s.id_no, ef.course_id FROM payments p inner join student_ef_list ef on ef.id = p.ef_id inner join student s on s.id = ef.student_id where date_format(p.payment_date,'%Y-%m') = '$month' order by unix_timestamp(p.date_created) asc ");
                             
                             if ($payments->num_rows > 0) :
                                 while ($row = $payments->fetch_array()) :
@@ -46,7 +48,7 @@ $month = isset($_GET['month']) ? $_GET['month'] : date('Y-m');
                                     <tr>
                                         <td class="text-center"><?php echo $i++ ?></td>
                                         <td>
-                                            <p> <?php echo date("M d,Y H:i A", strtotime($row['id_no'])) ?></p>
+                                            <p><?= strftime('%e de %B de %Y', strtotime($row['payment_date'])) ?> </p>
                                         </td>
                                         <td>
                                             <p> <?php echo ucwords($row['sname']) ?></p>

@@ -80,6 +80,7 @@ if($action == "delete_fees"){
 }
 if($action == "save_payment"){
 	$save = $crud->save_payment();
+	var_dump($save);
 	if($save)
 		echo $save;
 }

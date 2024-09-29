@@ -18,6 +18,8 @@
 		<a href="index.php?page=payments" class="nav-item nav-payments"><span class='icon-field'><i class="fa fa-receipt "></i></span> Pagos</a>
 
 		<a href="index.php?page=payments_report" class="nav-item nav-payments_report"><span class='icon-field'><i class="fa fa-th-list"></i></span> Reportes de Pago</a>
+		<a href="index.php?page=ingreso-mora" class="nav-item "> <span class='icon-field'><i class="fa fa-receipt "></i></span> Ingreso por mora</a>
+
 		<?php if ($_SESSION['login_type'] == 1) : ?>
 			<a href="index.php?page=users" class="nav-item nav-users"><span class='icon-field'><i class="fa fa-users "></i></span> Usuarios</a> <?php endif; ?>
 	</div>

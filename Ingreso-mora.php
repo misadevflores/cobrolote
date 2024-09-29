@@ -12,7 +12,7 @@
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <b>Ingreso por moras </b>
                         <a class="btn btn-primary" href="javascript:void(0)" id="new_mora_ingreso">
-                            <i class="fa fa-plus"></i> Pago
+                            <i class="fa fa-plus"></i> Ingresar
                         </a>
                     </div>
                     <div class="card-body">

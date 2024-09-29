@@ -1,5 +1,7 @@
 <?php
 include 'db_connect.php';
+date_default_timezone_set("America/La_Paz");
+setlocale(LC_TIME, 'es_VE.UTF-8','esp');
 $fees = $conn->query("SELECT ef.*,s.name as sname,s.id_no,concat(c.course,' - ',c.level) as `class` FROM student_ef_list ef inner join student s on s.id = ef.student_id inner join courses c on c.id = ef.course_id  where ef.id = {$_GET['ef_id']}");
 foreach ($fees->fetch_array() as $k => $v) {
 	$$k = $v;
@@ -14,11 +16,11 @@ while ($row = $payments->fetch_array()) {
 <style>
 	.flex {
 		display: inline-flex;
-		width: 100%;
+		width: 100%; 
 	}
 
-	.w-50 {
-		width: 50%;
+	.w-60 {
+		width: 60%;
 	}
 
 	.text-center {
@@ -96,17 +98,25 @@ while ($row = $payments->fetch_array()) {
 				<table width="100%" class="wborder">
 					<tr>
 						<td width="50%">Fecha</td>
-						<td width="50%" class='text-right'>Monto</td>
+						<td width="30%" class='text-right'>Couta</td>
+						<td width="30%" class='text-right'>Multa</td>
+						<td width="30%" class='text-right'>Total</td>
+						<td width="50%" class='text-right'>Total Bs</td>
 					</tr>
 					<?php
 					$ptotal = 0;
+					$acobrar=0;
 					foreach ($pay_arr as $row) {
 						if ($row["id"] <= $_GET['pid'] || $_GET['pid'] == 0) {
-							$ptotal += $row['amount'];
+							$ptotal += number_format($row['amount'], 2, ',', ' ');
+							$acobrar = number_format($row['amount'], 2, ',', ' ') + number_format($row['fine'], 2);
 					?>
 							<tr>
-								<td><b><?php echo date("Y-m-d", strtotime($row['payment_date'])) ?></b></td>
-								<td class='text-right'><b><?php echo number_format($row['amount']) ?></b></td>
+								<td><b><?php echo strftime('%b %d, %y', strtotime($row['payment_date']))   ?></b></td>
+								<td class='text-right'><b><?php echo number_format($row['amount'], 2, ',', ' ') ?></b></td>
+								<td><b style="color:red;"><?= number_format($row['fine'],0); ?></b></td>
+								<td class='text-right'><?=  number_format($acobrar, 2, ',', ' ') + number_format($row['fine'],2); ?></td>
+								<td class='text-right'><?php echo  number_format($row['amount'],2)* 7 ?></td>
 							</tr>
 					<?php
 						}
@@ -114,21 +124,23 @@ while ($row = $payments->fetch_array()) {
 					?>
 					<tr>
 						<th>Total</th>
-						<th class='text-right'><b><?php echo number_format($ptotal) ?></b></th>
+						<th class='text-right'><b><?php echo number_format($ptotal, 2, ',', ' ') ?></b></th>
+						<th>A cobrar</th> 
+						<th class='text-right'><b><?php echo number_format($ptotal, 2, ',', ' ') ?></b></th>
 					</tr>
 				</table>
 				<table width="100%">
 					<tr>
 						<td>Tarifa total a pagar</td>
-						<td class='text-right'><b><?php echo number_format($ftotal) ?></b></td>
+						<td class='text-right'><b><?php echo number_format($ftotal, 2, ',', ' ') ?></b></td>
 					</tr>
 					<tr>
 						<td>Total Pagado</td>
-						<td class='text-right'><b><?php echo number_format($ptotal) ?></b></td>
+						<td class='text-right'><b><?php echo number_format($ptotal, 2, ',', ' ') ?></b></td>
 					</tr>
 					<tr>
 						<td>Balance</td>
-						<td class='text-right'><b><?php echo number_format($ftotal - $ptotal) ?></b></td>
+						<td class='text-right'><b><?php echo number_format($ftotal - $ptotal, 2, ',', ' ') ?></b></td>
 					</tr>
 				</table>
 			</td>
