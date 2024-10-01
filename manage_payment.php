@@ -76,7 +76,7 @@ if (isset($_GET['id'])) {
 			</div>
 			<div class="form-group col-12">
 				<label for="" class="control-label">Estado</label>
-				<select name="estado" id="estado" class='form-control'>
+				<select name="stado" id="stado" class='form-control'>
 					<option value="0">Pagado</option>
 					<option value="1">Pendiente</option>
 				</select>

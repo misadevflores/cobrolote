@@ -11,7 +11,7 @@
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <b>Ingreso por moras </b>
-                        <a class="btn btn-primary" href="javascript:void(0)" id="new_mora_ingreso">
+                        <a class="btn btn-primary" href="javascript:void(0)" id="new_mora">
                             <i class="fa fa-plus"></i> Ingresar
                         </a>
                     </div>
@@ -20,13 +20,30 @@
                             <table class="table table-bordered table-hover">
                                 <thead>
                                     <tr>
-                                       
+                                       <th>Cliente</th>
+                                       <th>fecha</th>
+                                       <th>Ingreso x mora</th>
+                                       <th>Deuda x mora</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <?php
+                                <?php
+                                    $i = 1;
+                                    $payments = $conn->query("SELECT p.*,m.fecha, m.monto as moraingreso, s.name as sname, ef.ef_no, s.id_no, ef.course_id FROM payments p 
+                                            INNER JOIN student_ef_list ef ON ef.id = p.ef_id 
+                                            INNER JOIN student s ON s.id = ef.student_id 
+                                            INNER JOIN TbIngresoMora m on m.idpago=p.id
+                                            ORDER BY p.payment_date DESC");
+                                        while ($row = $payments->fetch_assoc()) :
                                     
                                     ?>
+                                    <tr>
+                                        <td><?= $row['sname']; ?></td>
+                                        <td><?= $row['fecha']; ?></td>
+                                        <td style="color:green;"><?= $row['moraingreso']; ?></td>
+                                        <td  style="color:red;"><?= $row['fine']; ?></td>
+                                    </tr>
+                                    <?php endwhile; ?>
                                 </tbody>
                             </table>
                         </div> <!-- Fin de la clase table-responsive -->
@@ -57,38 +74,7 @@
         $('table').dataTable();
     });
 
-    $('#new_mora_ingreso').click(function() {
-        uni_modal("Nuevo Pago ", "manage_mora.php", "mid-large");
+    $('#new_mora').click(function() {
+        uni_modal("ingreso de mora ", "manage_mora.php", "mid-large");
     });
-
-    $('.view_payment').click(function() {
-        uni_modal("Información de Pago", "view_payment.php?ef_id=" + $(this).attr('data-ef_id') + "&pid=" + $(this).attr('data-id'), "mid-large");
-    });
-
-    $('.edit_payment').click(function() {
-        uni_modal("Gestionar Pago", "manage_payment.php?id=" + $(this).attr('data-id'), "mid-large");
-    });
-
-    $('.delete_payment').click(function() {
-        _conf("¿Deseas eliminar este pago?", "delete_payment", [$(this).attr('data-id')]);
-    });
-
-    function delete_payment($id) {
-        start_load();
-        $.ajax({
-            url: 'ajax.php?action=delete_payment',
-            method: 'POST',
-            data: {
-                id: $id
-            },
-            success: function(resp) {
-                if (resp == 1) {
-                    alert_toast("Datos eliminados exitósamente", 'success');
-                    setTimeout(function() {
-                        location.reload();
-                    }, 1500);
-                }
-            }
-        });
-    }
 </script>

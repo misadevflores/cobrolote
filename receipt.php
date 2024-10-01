@@ -114,9 +114,9 @@ while ($row = $payments->fetch_array()) {
 							<tr>
 								<td><b><?php echo strftime('%b %d, %y', strtotime($row['payment_date']))   ?></b></td>
 								<td class='text-right'><b><?php echo number_format($row['amount'], 2, ',', ' ') ?></b></td>
-								<td><b style="color:red;"><?= number_format($row['fine'],0); ?></b></td>
-								<td class='text-right'><?=  number_format($acobrar, 2, ',', ' ') + number_format($row['fine'],2); ?></td>
-								<td class='text-right'><?php echo  number_format($row['amount'],2)* 7 ?></td>
+								<td><b style="color:red;padding:5px;"><?= number_format($row['fine'],0); ?></b></td>
+								<td class='text-right' style="padding:5px;"><?=  number_format($acobrar, 2, ',', ' ') + number_format($row['fine'],2); ?></td>
+								<td class='text-right' style="padding:5px;"><?php echo  number_format($row['amount'],2)* 7 ?></td>
 							</tr>
 					<?php
 						}

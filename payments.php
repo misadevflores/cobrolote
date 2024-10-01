@@ -31,7 +31,7 @@ setlocale(LC_TIME, 'es_VE.UTF-8','esp');
                                         <th>Multa</th>
                                         <th>Tipo de cambio</th>
                                         <th>Total Bs.</th>
-                                        <th>Numero de cuota</th>
+                                        <th>N. cuota</th>
                                         <th>Estado</th>
                                         <th class="text-center">Acción</th>
                                     </tr>
@@ -43,14 +43,12 @@ setlocale(LC_TIME, 'es_VE.UTF-8','esp');
                                             INNER JOIN student_ef_list ef ON ef.id = p.ef_id 
                                             INNER JOIN student s ON s.id = ef.student_id 
                                             ORDER BY p.payment_date DESC");
-                                            var_dump($payments);
-                                    // if ($payments->num_rows > 0) :
+                                    if ($payments->num_rows > 0) :
                                         while ($row = $payments->fetch_assoc()) :
-                                            // $paid = $conn->query("SELECT sum(amount) as paid FROM payments where ef_id=" . $row['id']);
-                                            // $paid = $paid->num_rows > 0 ? $paid->fetch_array()['paid'] : '';
-                                            // $property = $conn->query("SELECT course FROM courses where id =" . $row['course_id']);
-                                            // $property = $property->num_rows > 0 ? $property->fetch_array()['course'] : '';
-                                            var_dump($row);
+                                            $paid = $conn->query("SELECT sum(amount) as paid FROM payments where ef_id=" . $row['id']);
+                                            $paid = $paid->num_rows > 0 ? $paid->fetch_array()['paid'] : '';
+                                            $property = $conn->query("SELECT course FROM courses where id =" . $row['course_id']);
+                                            $property = $property->num_rows > 0 ? $property->fetch_array()['course'] : '';
                                     ?>
                                             <tr>
                                                 <td class="text-center"><?php echo $i++ ?></td>
@@ -62,7 +60,7 @@ setlocale(LC_TIME, 'es_VE.UTF-8','esp');
                                                 <td><?php echo number_format($row['registered_exchange_rate'], 2, ',', ' ') ?></td>
                                                 <td><?php echo number_format((($row['fine'] + $row['amount']) * $row['registered_exchange_rate']), 2, ',',' ') ?></td>
                                                 <td><?php echo $row['fee_no'] ?></td>
-                                                <td><?php echo $row['estado']; ?></td>
+                                                <td><?php if(intval($row['stado'])===0){ echo '<span class="badge badge-pill badge-success">Pagada</span>';}elseif(intval($row['stado'])===1){ echo '<span class="badge badge-pill badge-danger">Pendiente</span>';} ?></td>
                                                 <td class="text-center">
 
                                                
@@ -87,13 +85,13 @@ setlocale(LC_TIME, 'es_VE.UTF-8','esp');
                                             </tr>
                                         <?php
                                         endwhile;
-                                        // else :
-                                        //     ?>
-                                        <!-- //     <tr>
-                                        //         <th class="text-center" colspan="11">Sin datos que mostrar.</th>
-                                        //     </tr> -->
+                                         else :
+                                        ?>
+                                            <tr>
+                                                <th class="text-center" colspan="11">Sin datos que mostrar.</th>
+                                            </tr> 
                                         <?php
-                                        // endif;
+                                        endif;
                                     ?>
                                 </tbody>
                             </table>

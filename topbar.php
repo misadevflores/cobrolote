@@ -20,6 +20,7 @@
         <div class=" dropdown mr-4">
           <a class="dropdown-item" href="ajax.php?action=logout"><i class="fa fa-power-off"></i> Logout</a>
         </div>
+        <a href="https://www.youtube.com/playlist?list=PLj8KEdMpxZ7wSHd0zYMh_Z8MW2oAVtm5Q" target="_blank"> Manual de uso</a>
       </div>
     </div>
   </div>

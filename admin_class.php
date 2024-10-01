@@ -413,4 +413,11 @@ Class Action {
 		if($save)
 			return 1;
 	}
+
+	function save_mora(){
+		extract($_POST);
+		$save = $this->db->query("INSERT INTO TbIngresoMora (idpago,fecha,monto,montobs)values('$idpago','$fecha','$monto','$montobs')");
+		if($save)
+			return 1;
+	}
 }
